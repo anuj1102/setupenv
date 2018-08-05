@@ -10,7 +10,7 @@ repos = [
 	},
 	{
 		name: "ohmyzsh",
-		notes: "Install the basic oh my zsh",
+		notes: "Install the basic oh my zsh. See github page for installation details. After copy zshrc over",
 	  urls: ["https://github.com/robbyrussell/oh-my-zsh"]
 	},
 	{
