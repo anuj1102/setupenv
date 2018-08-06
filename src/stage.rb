@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-
 class Stage
 
 	def initialize(cmd, msg = "")
@@ -49,10 +47,3 @@ end
 def stage(*args)
 	Stage.new(*args)
 end
-
-DOTFILES_DIR=File.expand_path(File.dirname(__FILE__))
-
-stage("cp ~/.zshrc ~/.zshrc.orig", "Back up .zshrc?").ask.run
-stage("ln -s #{DOTFILES_DIR}/.zshrc ~/.zshrc", "Create symlink to .zshrc").ask.show.run
-stage("chsh -s /bin/zsh", "Change default shell to zsh").ask.show.run
-
