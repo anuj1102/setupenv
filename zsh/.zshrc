@@ -105,7 +105,7 @@ source $ZSH/oh-my-zsh.sh
 alias vi='nvim'
 
 #Prompt with current dir
-# source ~/.aliases
+source ~/.aliases
 # source ~/.mac_aliases
 # eval "$(pyenv init -)"
 # eval "$(pyenv virtualenv-init -)"
