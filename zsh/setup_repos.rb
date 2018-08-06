@@ -26,4 +26,3 @@ zsh_syntax_highlighting = Repo.new("#{zsh_custom}/zsh-syntax-highlighting",
 										)
 
 ZSH_REPOS = [oh_my_zsh, command_time, zsh_autosuggestions, zsh_syntax_highlighting]
-setup_repos(ZSH_REPOS)

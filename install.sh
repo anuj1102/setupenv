@@ -6,3 +6,4 @@ function check_dep() {
 check_dep nvim
 check_dep zsh
 ./zsh/setup_zsh.rb
+./neovim/setup_neovim.rb
