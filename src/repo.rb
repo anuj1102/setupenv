@@ -28,3 +28,10 @@ class Repo
 			puts "Failed cmd!: #{cmd}" unless result
 		end
 end
+
+def setup_repos(repos)
+  repos.each do |repo|
+    repo.add_subtree
+    repo.pull_subtree
+  end
+end

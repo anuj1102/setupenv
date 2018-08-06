@@ -26,10 +26,4 @@ zsh_syntax_highlighting = Repo.new("#{zsh_custom}/zsh-syntax-highlighting",
 										)
 
 ZSH_REPOS = [oh_my_zsh, command_time, zsh_autosuggestions, zsh_syntax_highlighting]
-
-def setup_repos
-  ZSH_REPOS.each do |repo|
-  	repo.add_subtree
-  	repo.pull_subtree
-	end
-end
+setup_repos(ZSH_REPOS)
