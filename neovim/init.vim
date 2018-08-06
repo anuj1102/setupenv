@@ -30,6 +30,8 @@ set softtabstop=0 noexpandtab
 set shiftwidth=2
 set autoindent
 
+"Relative line numbering
+:set number relativenumber
 
 " Theme
 syntax enable
