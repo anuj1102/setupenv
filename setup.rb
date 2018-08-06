@@ -16,6 +16,10 @@ class Repo
 		run_system(subtree_cmd("add"))
 	end
 
+	def pull_subtree
+		run_system(subtree_cmd("pull"))
+	end
+
 	private
 		def subtree_cmd(cmd)
 			"git subtree #{cmd} --prefix #{@dir} #{@url} master --squash"
@@ -46,8 +50,10 @@ zsh_autosuggestions = Repo.new("#{zsh_custom}/zsh-autosuggestions",
 										)
 
 ZSH_REPOS = [oh_my_zsh, command_time, zsh_autosuggestions]
-
-command_time.add_subtree
+ZSH_REPOS.each do |repo|
+	repo.add_subtree
+	repo.pull_subtree
+end
 #puts ZSH_REPOS
 
 #def sutbtree_cmd(cmd)
