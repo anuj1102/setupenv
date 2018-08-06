@@ -49,7 +49,12 @@ zsh_autosuggestions = Repo.new("#{zsh_custom}/zsh-autosuggestions",
 										 ["zsh"]
 										)
 
-ZSH_REPOS = [oh_my_zsh, command_time, zsh_autosuggestions]
+zsh_syntax_highlighting = Repo.new("#{zsh_custom}/zsh-syntax-highlighting", 
+										 "https://github.com/zsh-users/zsh-syntax-highlighting.git",
+										 ["zsh"]
+										)
+
+ZSH_REPOS = [oh_my_zsh, command_time, zsh_autosuggestions, zsh_syntax_highlighting]
 ZSH_REPOS.each do |repo|
 	repo.add_subtree
 	repo.pull_subtree
