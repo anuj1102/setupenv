@@ -11,6 +11,8 @@ Plug 'mklabs/split-term.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'Shougo/deoplete.nvim'
 Plug 'fishbullet/deoplete-ruby'
+Plug 'kien/ctrlp.vim'
+Plug 'easymotion/vim-easymotion'
 
 call plug#end()
 
@@ -32,6 +34,30 @@ set autoindent
 
 "Relative line numbering
 :set number relativenumber
+
+"Set leader key to space
+nnoremap <SPACE> <Nop>
+let mapleader=" "
+
+" EasyMostion suggested mappings
+" <Leader>f{char} to move to {char}
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+
+" s{char}{char} to move to {char}{char}
+nmap s <Plug>(easymotion-overwin-f2)
+
+" Move to line
+map <Leader>l <Plug>(easymotion-bd-jk)
+nmap <Leader>l <Plug>(easymotion-overwin-line)
+
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+" Search above and below
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
 
 " Theme
 syntax enable
