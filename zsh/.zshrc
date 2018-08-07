@@ -12,7 +12,7 @@ ZSH_PLUGINS=$ZSH/custom/plugins
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME="anujp"
 
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
@@ -113,3 +113,5 @@ fi
 # eval "$(pyenv init -)"
 # eval "$(pyenv virtualenv-init -)"
 source $ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+
