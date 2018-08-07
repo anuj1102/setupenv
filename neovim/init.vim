@@ -93,7 +93,7 @@ let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 let g:fzf_layout = { 'up': '~40%' }
 nmap <Leader>o :GFiles<CR>
 " nmap <Leader>s :Tags<CR>
-nmap <Leader>s :Rg<CR>
+nmap <Leader>s :Ag<CR>
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
