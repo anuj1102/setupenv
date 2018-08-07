@@ -11,8 +11,9 @@ Plug 'mklabs/split-term.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'Shougo/deoplete.nvim'
 Plug 'fishbullet/deoplete-ruby'
-Plug 'kien/ctrlp.vim'
 Plug 'easymotion/vim-easymotion'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
@@ -34,6 +35,8 @@ set autoindent
 
 "Relative line numbering
 :set number relativenumber
+"Remove number
+:nnoremap L :set nornu | :set nonumber
 
 "Set leader key to space
 nnoremap <SPACE> <Nop>
@@ -70,4 +73,17 @@ colorscheme OceanicNext
 " let g:python3_host_prog = '/Users/anuj/.pyenv/versions/neovim3/bin/python'
 " let g:python_host_prog = '/Users/anuj/.pyenv/versions/neovim2/bin/python'
 " let g:deoplete#enable_at_startup = 1
+
+
+"Fzf
+let g:fzf_layout = { 'up': '~40%' }
+nmap <Leader>o :GFiles<CR>
+nmap <Leader>s :Tags<CR>
+
+" Use ripgrep for search
+set grepprg=rg\ --vimgrep
+
+"Ctrlp search from top
+let g:ctrlp_match_window_bottom = 0
+let g:ctrlp_match_window_reversed = 0
 
