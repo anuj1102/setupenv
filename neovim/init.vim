@@ -35,8 +35,20 @@ set autoindent
 
 "Relative line numbering
 :set number relativenumber
-"Remove number
-:nnoremap L :set nornu | :set nonumber
+
+"Toggle Line numbers with Shift+l
+function! g:ToggleNuMode()
+  if &nu == 1
+     set nornu nonumber
+  else
+     set number relativenumber
+  endif
+endfunction
+nnoremap L :call ToggleNuMode()<cr>
+
+
+" Copy paste
+set clipboard+=unnamed
 
 "Set leader key to space
 nnoremap <SPACE> <Nop>
