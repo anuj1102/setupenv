@@ -86,16 +86,22 @@ colorscheme OceanicNext
 " let g:python_host_prog = '/Users/anuj/.pyenv/versions/neovim2/bin/python'
 " let g:deoplete#enable_at_startup = 1
 
+"Syntastic cpp
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
 "Fzf
 let g:fzf_layout = { 'up': '~40%' }
 nmap <Leader>o :GFiles<CR>
-nmap <Leader>s :Tags<CR>
+" nmap <Leader>s :Tags<CR>
+nmap <Leader>s :Ag<CR>
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
-" Use ripgrep for search
-set grepprg=rg\ --vimgrep
+" Function to source only if file exists {
+function! SourceIfExists(file)
+  if filereadable(expand(a:file))
+    exe 'source' a:file
+  endif
+endfunction
 
-"Ctrlp search from top
-let g:ctrlp_match_window_bottom = 0
-let g:ctrlp_match_window_reversed = 0
+call SourceIfExists("~/.config/nvim/local.vim")
 

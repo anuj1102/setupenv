@@ -5,6 +5,7 @@ function check_dep() {
 
 check_dep ruby
 check_dep nvim
+check_dep rg # ripgrep
 check_dep zsh
 ./zsh/setup_zsh.rb
 ./neovim/setup_neovim.rb
