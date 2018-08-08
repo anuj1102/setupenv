@@ -86,6 +86,13 @@ colorscheme OceanicNext
 " let g:python_host_prog = '/Users/anuj/.pyenv/versions/neovim2/bin/python'
 " let g:deoplete#enable_at_startup = 1
 
+" Function to source only if file exists {
+function! SourceIfExists(file)
+  if filereadable(expand(a:file))
+    exe 'source' a:file
+  endif
+endfunction
+
 "Syntastic cpp
 let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
@@ -94,21 +101,20 @@ let g:fzf_layout = { 'up': '~40%' }
 nmap <Leader>o :GFiles<CR>
 " nmap <Leader>s :Tags<CR>
 nmap <Leader>s :Ag<CR>
+
+let groot = systemlist('git -C ' . expand('%:p:h') . ' rev-parse --show-toplevel')[0]
+
+
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
   \   <bang>0 ? fzf#vim#with_preview('up:40%')
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
+" Search in current dir
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
-" Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
 
-" Function to source only if file exists {
-function! SourceIfExists(file)
-  if filereadable(expand(a:file))
-    exe 'source' a:file
-  endif
-endfunction
+nnoremap <leader>d :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
 
 call SourceIfExists("~/.config/nvim/local.vim")
 
