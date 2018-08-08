@@ -47,7 +47,7 @@ fi
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
+# COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -105,6 +105,14 @@ source $ZSH/oh-my-zsh.sh
 
 alias vi='nvim'
 alias o='vi -c :Files'
+
+# https://superuser.com/questions/458906/zsh-tab-completion-of-git-commands-is-very-slow-how-can-i-turn-it-off
+__git_files () { 
+    _wanted files expl 'local files' _files     
+}
+# Esc v to write command line in vi
+bindkey -M vicmd v edit-command-line
+
 
 # Local aliases
 if [ -f ~/.bash_aliases ]; then
