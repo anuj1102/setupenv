@@ -47,11 +47,7 @@ endfunction
 nnoremap L :call ToggleNuMode()<cr>
 
 " Basic window movement
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-
+" Tab + h j k l or tab tab
 nnoremap <tab> <c-w>
 nnoremap <tab><tab> <c-w><c-w>
 
@@ -76,16 +72,17 @@ nmap <Leader>f <Plug>(easymotion-overwin-f)
 nmap s <Plug>(easymotion-overwin-f2)
 
 " Move to line
-map <Leader>l <Plug>(easymotion-bd-jk)
-nmap <Leader>l <Plug>(easymotion-overwin-line)
+" map <Leader>l <Plug>(easymotion-bd-jk)
+" nmap <Leader>l <Plug>(easymotion-overwin-line)
 
 " Move to word
 map  <Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
 
-" Search above and below
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
+" Search above and below. Commenting in in favor of leader keys to move around
+" splits
+" map <Leader>j <Plug>(easymotion-j)
+" map <Leader>k <Plug>(easymotion-k)
 
 " Theme
 syntax enable
@@ -112,7 +109,7 @@ let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 "Fzf
 let g:fzf_layout = { 'up': '~40%' }
 " nmap <Leader>o :GFiles<CR>
-nnoremap <C-p> :GFiles<CR>
+nmap <Leader>o :GFiles<CR>
 " nmap <Leader>s :Tags<CR>
 nmap <Leader>s :Ag<CR>
 
