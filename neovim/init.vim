@@ -46,9 +46,22 @@ function! g:ToggleNuMode()
 endfunction
 nnoremap L :call ToggleNuMode()<cr>
 
+" Basic window movement
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+nnoremap <tab> <c-w>
+nnoremap <tab><tab> <c-w><c-w>
+
 
 " Copy paste
 set clipboard+=unnamed
+
+" Write the default yank register to a file so we can pull it locally
+" To do make this use $HOME
+nnoremap Y :call writefile(getreg('"', 1, 1), "/home/anujp/.remote_copy")<cr>
 
 "Set leader key to space
 nnoremap <SPACE> <Nop>
@@ -98,7 +111,8 @@ let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
 "Fzf
 let g:fzf_layout = { 'up': '~40%' }
-nmap <Leader>o :GFiles<CR>
+" nmap <Leader>o :GFiles<CR>
+nnoremap <C-p> :GFiles<CR>
 " nmap <Leader>s :Tags<CR>
 nmap <Leader>s :Ag<CR>
 
@@ -115,6 +129,24 @@ command! -bang -nargs=* Rg
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 nnoremap <leader>d :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
+
+function! s:my_fzf_handler(lines) abort
+  if empty(a:lines)
+    return
+  endif
+  let cmd = get({ 'ctrl-t': 'tabedit',
+                \ 'ctrl-x': 'split',
+                \ 'ctrl-v': 'vsplit' }, remove(a:lines, 0), 'e')
+  for item in a:lines
+    execute cmd escape(item, ' %#\')
+  endfor
+endfunction
+
+nnoremap <silent> <leader>f :call fzf#run({
+  \ 'options': '--expect=ctrl-t,ctrl-x,ctrl-v',
+  \ 'up':      '40%',
+  \ 'sink*':   function('<sid>my_fzf_handler')})<cr>
+
 
 call SourceIfExists("~/.config/nvim/local.vim")
 
