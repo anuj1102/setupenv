@@ -14,7 +14,7 @@ Plug 'fishbullet/deoplete-ruby'
 Plug 'easymotion/vim-easymotion'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-
+Plug 'scrooloose/nerdtree'
 call plug#end()
 
 "https://github.com/mhartington/oceanic-next
@@ -60,8 +60,30 @@ set clipboard+=unnamed
 nnoremap Y :call writefile(getreg('"', 1, 1), "/home/anujp/.remote_copy")<cr>
 
 "Set leader key to space
-nnoremap <SPACE> <Nop>
+nnoremap <SPACE> <c-w>
 let mapleader=" "
+
+"Tabs
+nnoremap <Leader>t :tabnew<CR>
+" nnoremap <Leader>q :q<CR> Seems to work without mapping
+nnoremap <Leader>] gt
+nnoremap <Leader>[ gT
+
+nnoremap <Leader>d :vsplit<CR>
+nnoremap <Leader>D :split<CR>
+nnoremap  T :terminal<CR>
+nnoremap <Leader>= :VTerm<cr>
+nnoremap <Leader>- :Term<cr>
+nnoremap <Leader>1 1gt
+nnoremap <Leader>2 2gt
+nnoremap <Leader>3 3gt
+nnoremap <Leader>4 4gt
+nnoremap <Leader>5 5gt
+nnoremap <Leader>6 6gt
+nnoremap <Leader>7 7gt
+nnoremap <Leader>8 8gt
+nnoremap <Leader>9 9gt
+
 
 " EasyMostion suggested mappings
 " <Leader>f{char} to move to {char}
@@ -109,9 +131,9 @@ let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 "Fzf
 let g:fzf_layout = { 'up': '~40%' }
 " nmap <Leader>o :GFiles<CR>
-nmap <Leader>o :GFiles<CR>
+nmap <Leader>p :GFiles<CR>
 " nmap <Leader>s :Tags<CR>
-nmap <Leader>s :Ag<CR>
+nmap <Leader>f :Ag<CR>
 
 let groot = systemlist('git -C ' . expand('%:p:h') . ' rev-parse --show-toplevel')[0]
 
@@ -125,8 +147,10 @@ command! -bang -nargs=* Rg
 " Search in current dir
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
-nnoremap <leader>d :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
+"Don't need this
+" nnoremap <leader>d :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
 
+" Do I need this?
 function! s:my_fzf_handler(lines) abort
   if empty(a:lines)
     return
@@ -135,15 +159,23 @@ function! s:my_fzf_handler(lines) abort
                 \ 'ctrl-x': 'split',
                 \ 'ctrl-v': 'vsplit' }, remove(a:lines, 0), 'e')
   for item in a:lines
-    execute cmd escape(item, ' %#\')
+   execute cmd escape(item, ' %#\')
   endfor
 endfunction
 
-nnoremap <silent> <leader>f :call fzf#run({
-  \ 'options': '--expect=ctrl-t,ctrl-x,ctrl-v',
-  \ 'up':      '40%',
-  \ 'sink*':   function('<sid>my_fzf_handler')})<cr>
+"noremap <silent> <leader>f :call fzf#run({
+"  \ 'options': '--expect=ctrl-t,ctrl-x,ctrl-v',
+"  \ 'up':      '40%',
+ "'sink*':   function('<sid>my_fzf_handler')})<cr>
 
 
+" Terminal mode
+" Create new side terminal with T
+
+" http://vimcasts.org/episodes/neovim-terminal-mappings/
+tnoremap <Esc> <C-\><C-n>
+tnoremap <A-[> <Esc> 
+
+"NerdTree
+nmap D :NERDTreeToggle<CR>
 call SourceIfExists("~/.config/nvim/local.vim")
-
