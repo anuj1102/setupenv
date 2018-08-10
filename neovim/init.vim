@@ -71,9 +71,17 @@ nnoremap <Leader>[ gT
 
 nnoremap <Leader>d :vsplit<CR>
 nnoremap <Leader>D :split<CR>
+
 nnoremap  T :terminal<CR>
+
+
 nnoremap <Leader>= :VTerm<cr>
 nnoremap <Leader>- :Term<cr>
+"Start in insert mode on create and switch
+autocmd BufWinEnter,WinEnter term://* startinsert
+:au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+
+"Tabs
 nnoremap <Leader>1 1gt
 nnoremap <Leader>2 2gt
 nnoremap <Leader>3 3gt
