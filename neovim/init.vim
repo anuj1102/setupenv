@@ -15,6 +15,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdtree'
+	
 call plug#end()
 
 "https://github.com/mhartington/oceanic-next
@@ -65,6 +66,7 @@ let mapleader=" "
 
 "Tabs
 nnoremap <Leader>t :tabnew<CR>
+nnoremap <Leader>w :q<CR>
 " nnoremap <Leader>q :q<CR> Seems to work without mapping
 nnoremap <Leader>] gt
 nnoremap <Leader>[ gT
@@ -84,7 +86,10 @@ nnoremap <Leader>7 7gt
 nnoremap <Leader>8 8gt
 nnoremap <Leader>9 9gt
 
+"Edit file under cursor"
 
+nnoremap <tab>f :vsplit <cfile><CR>
+vnoremap <tab>f :vsplit <cfile><CR>
 " EasyMostion suggested mappings
 " <Leader>f{char} to move to {char}
 map  <Leader>f <Plug>(easymotion-bd-f)
@@ -98,8 +103,8 @@ nmap s <Plug>(easymotion-overwin-f2)
 " nmap <Leader>l <Plug>(easymotion-overwin-line)
 
 " Move to word
-map  <Leader>w <Plug>(easymotion-bd-w)
-nmap <Leader>w <Plug>(easymotion-overwin-w)
+map  <Leader>s <Plug>(easymotion-bd-w)
+nmap <Leader>s <Plug>(easymotion-overwin-w)
 
 " Search above and below. Commenting in in favor of leader keys to move around
 " splits
