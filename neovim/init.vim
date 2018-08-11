@@ -17,6 +17,9 @@ Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'brettanomyces/nvim-terminus'
+Plug 'majutsushi/tagbar'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'tpope/vim-sleuth'
 
 call plug#end()
 
@@ -31,10 +34,10 @@ endif
 
 "Basics
 set mouse=a
-set tabstop=2
-set softtabstop=0 noexpandtab
-set shiftwidth=2
-set autoindent
+" set tabstop=2
+" kset softtabstop=0 noexpandtab
+" shet shiftwidth=2
+" set autoindent
 
 " Copy paste
 set clipboard+=unnamed
@@ -87,7 +90,7 @@ vnoremap <Leader>k <c-w>k
 nnoremap <Leader>d :vsplit<CR>
 nnoremap <Leader>D :split<CR>
 nnoremap <Leader>t :tabnew<CR>
-nnoremap <Leader>w :tabclose<CR>
+nnoremap <Leader>w :close<CR>
 let g:terminus_use_xterm_title = 1
 nnoremap <Leader>T :TerminusOpen<CR>
 
@@ -182,7 +185,7 @@ function! s:my_fzf_handler(lines) abort
 	endfor
 endfunction
 
-"noremap <silent> <leader>f :call fzf#run({
+"nnoremap <silent> <leader>f :call fzf#run({
 "  \ 'options': '--expect=ctrl-t,ctrl-x,ctrl-v',
 "  \ 'up':      '40%',
 "'sink*':   function('<sid>my_fzf_handler')})<cr>
@@ -197,8 +200,8 @@ tnoremap <A-[> <Esc>
 "Auto start in insert mode
 au TermOpen * setlocal listchars= nonumber norelativenumber
 au TermOpen * startinsert
-au BufEnter,BufWinEnter,WinEnter term://* startinsert
-au BufLeave term://* stopinsert
+" au BufEnter,BufWinEnter,WinEnter term://* startinsert
+" au BufWinEnter,WinEnter term://* startinsert
 
 "NerdTree
 nmap D :NERDTreeToggle<CR>
@@ -254,3 +257,7 @@ let g:airline#extensions#syntastic#enabled = 1
 " let g:airline_powerline_fonts = 1
 " let g:airline_theme='powerlineish'
 " set laststatus=2
+"Tags
+nnoremap <leader>' <c-]>
+nnoremap <leader>; <c-t>
+

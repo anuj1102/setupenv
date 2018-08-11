@@ -142,3 +142,5 @@ export FZF_DEFAULT_OPTS="--history=$HOME/.fzf_history"
 
 # Enable vim in shell
 # bindkey -v
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
