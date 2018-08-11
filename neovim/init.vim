@@ -36,20 +36,18 @@ set softtabstop=0 noexpandtab
 set shiftwidth=2
 set autoindent
 
-"Relative line numbering
-:set number relativenumber
-
 " Copy paste
 set clipboard+=unnamed
 
-function! g:ToggleNuMode()
-	if &nu == 1
-		set nornu nonumber
-	else
-		set number relativenumber
-	endif
-endfunction
-set number relativenumber
+" function! g:ToggleNuMode()
+" 	if &nu == 1
+" 		set nornu nonumber
+" 	else
+" 		set number relativenumber
+" 	endif
+" endfunction
+set number
+set relativenumber
 
 "Learn VIM correctly
 noremap <Up> <nop>
@@ -90,8 +88,8 @@ nnoremap <Leader>d :vsplit<CR>
 nnoremap <Leader>D :split<CR>
 nnoremap <Leader>t :tabnew<CR>
 nnoremap <Leader>w :tabclose<CR>
-nnoremap <Leader>T :TerminusOpen<CR>
 let g:terminus_use_xterm_title = 1
+nnoremap <Leader>T :TerminusOpen<CR>
 
 nnoremap <Leader>= :VTerm<cr>
 nnoremap <Leader>- :Term<cr>
@@ -197,7 +195,10 @@ endfunction
 tnoremap <Esc> <C-\><C-n>
 tnoremap <A-[> <Esc>
 "Auto start in insert mode
-autocmd BufWinEnter,WinEnter term://* startinsert
+au TermOpen * setlocal listchars= nonumber norelativenumber
+au TermOpen * startinsert
+au BufEnter,BufWinEnter,WinEnter term://* startinsert
+au BufLeave term://* stopinsert
 
 "NerdTree
 nmap D :NERDTreeToggle<CR>
