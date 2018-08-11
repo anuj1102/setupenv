@@ -11,7 +11,6 @@ vim_plug = Repo.new("#{DIR}/vim-plug",
 										 "https://github.com/junegunn/vim-plug",
 										 ["neovim"]
 										)
-# setup_repos([vim_plug])
 
 stage("mkdir -p ~/.local/share/nvim/site/autoload && cp #{DIR}/vim-plug/plug.vim ~/.local/share/nvim/site/autoload/plug.vim").run
 
