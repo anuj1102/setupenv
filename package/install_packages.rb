@@ -4,7 +4,7 @@ require_relative "../src/stage.rb"
 require_relative "../repos/repo_defs.rb"
 require_relative "../src/package.rb"
 
-INSTALL_DIR = "#{ENV["HOME"]}/local"
+INSTALL_DIR = "#{ENV["HOME"]}/.local"
 puts "#{CTAGS}"
 stage("echo 'hi'", "Install packages to #{INSTALL_DIR}?")
 abduco_package = Package.new(ABDUCO, INSTALL_DIR) 
