@@ -109,15 +109,19 @@ else
   export VISUAL="nvim"
 fi
 alias vi="$VISUAL"
-alias o='vi -c :Files'
+
+# Create new editing sessions easily
+function nmux() {
+  if ! abduco -a $1; then
+    echo "Session $1 not found, starting new session..."
+    abduco -c $1 nvim -c :terminal
+  fi
+}
 
 # https://superuser.com/questions/458906/zsh-tab-completion-of-git-commands-is-very-slow-how-can-i-turn-it-off
 __git_files () { 
     _wanted files expl 'local files' _files     
 }
-# Esc v to write command line in vi
-bindkey -M vicmd v edit-command-line
-
 
 # Local aliases
 if [ -f ~/.bash_aliases ]; then

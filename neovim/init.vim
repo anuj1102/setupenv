@@ -218,7 +218,6 @@ set hidden
 
 " Move to the next buffer
 " nmap <leader>n :bnext<CR>
-nnoremap <Tab> <nop>
 nnoremap <leader>] :bnext<CR>
 nnoremap <leader>[ :bprevious<CR>
 
