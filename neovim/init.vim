@@ -204,7 +204,7 @@ au TermOpen * startinsert
 " au BufWinEnter,WinEnter term://* startinsert
 
 "NerdTree
-nmap D :NERDTreeToggle<CR>
+nnoremap <leader>D :NERDTreeToggle<CR>
 call SourceIfExists("~/.config/nvim/local.vim")
 
 "Buffers
