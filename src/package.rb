@@ -3,12 +3,17 @@ require_relative "stage.rb"
 
 module Installation
 	def compile(cmd)
-		cmd = "cd #{@repo.dir} && #{cmd}"
-		stage(cmd, "Compiling #{@repo}").show.run
+		puts "Compiling #{@repo}"
+		stage(make_cmd(cmd)).ask.run
 	end
 
 	def install(cmd)
-		stage(cmd, "Installing #{@repo} to #{@install_dir}").ask.run
+		puts "Installing #{@repo} to #{@install_dir}"
+		stage(make_cmd(cmd)).ask.run
+	end
+
+	def make_cmd(cmd)
+		 "cd #{@repo.dir} && #{cmd}"
 	end
 end
 
