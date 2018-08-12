@@ -29,9 +29,13 @@ class Repo
 		end
 end
 
-def setup_repos(repos)
+def setup_repos(repos, dry: false)
   repos.each do |repo|
     repo.add_subtree
-    repo.pull_subtree
+		if dry
+			puts "Dry pulling #{repo.url} to #{repo.dir}"
+		else
+   		repo.pull_subtree
+		end
   end
 end

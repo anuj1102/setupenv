@@ -34,10 +34,10 @@ endif
 
 "Basics
 set mouse=a
-" set tabstop=2
-" kset softtabstop=0 noexpandtab
-" shet shiftwidth=2
-" set autoindent
+set tabstop=2
+set softtabstop=0 noexpandtab
+set shiftwidth=2
+set autoindent
 
 " Copy paste
 set clipboard+=unnamed
