@@ -157,9 +157,6 @@ nmap <Leader>o :GFiles<CR>/
 " nmap <Leader>s :Tags<CR>
 nmap <Leader>f :Ag<CR>
 
-let groot = systemlist('git -C ' . expand('%:p:h') . ' rev-parse --show-toplevel')[0]
-
-
 command! -bang -nargs=* Rg
 			\ call fzf#vim#grep(
 			\   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
