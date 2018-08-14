@@ -3,7 +3,8 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'tpope/vim-sensible'
 Plug 'mhartington/oceanic-next'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'vim-syntastic/syntastic'
+" Plug 'vim-syntastic/syntastic'
+Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'bling/vim-airline'
 Plug 'Raimondi/delimitMate'
@@ -151,7 +152,7 @@ function! SourceIfExists(file)
 endfunction
 
 "Syntastic cpp
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
+" let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
 "Auto chdir
 autocmd BufEnter * silent! lcd %:p:h
@@ -261,7 +262,8 @@ let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-let g:airline#extensions#syntastic#enabled = 1
+" let g:airline#extensions#syntastic#enabled = 1
+let g:airline#extensions#ale#enabled = 1
 
 " let g:airline_powerline_fonts = 1
 " let g:airline_theme='powerlineish'
