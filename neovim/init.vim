@@ -20,6 +20,7 @@ Plug 'brettanomyces/nvim-terminus'
 Plug 'majutsushi/tagbar'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-commentary'
 
 call plug#end()
 
@@ -38,6 +39,7 @@ set tabstop=2
 set softtabstop=0 noexpandtab
 set shiftwidth=2
 set autoindent
+set smartindent
 
 " Copy paste
 set clipboard+=unnamed
@@ -70,6 +72,7 @@ nnoremap Y :call writefile(getreg('"', 1, 1), "/home/anujp/.remote_copy")<cr>
 "Set leader key to space
 nnoremap <SPACE> <nop>
 let mapleader=" "
+set notimeout
 
 nnoremap <Leader>l <c-w>l
 nnoremap <Leader>h <c-w>h
@@ -150,12 +153,22 @@ endfunction
 "Syntastic cpp
 let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
+"Auto chdir
+autocmd BufEnter * silent! lcd %:p:h
+
 "Fzf
 let g:fzf_layout = { 'up': '~40%' }
 " nmap <Leader>o :GFiles<CR>
 nmap <Leader>o :GFiles<CR>/
 " nmap <Leader>s :Tags<CR>
 nmap <Leader>f :Ag<CR>
+
+" Command for git grep
+" - fzf#vim#grep(command, with_column, [options], [fullscreen])
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 0,
+  \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
 
 command! -bang -nargs=* Rg
 			\ call fzf#vim#grep(
@@ -197,7 +210,7 @@ tnoremap <A-[> <Esc>
 "Auto start in insert mode
 au TermOpen * setlocal listchars= nonumber norelativenumber
 au TermOpen * startinsert
-" au BufEnter,BufWinEnter,WinEnter term://* startinsert
+au BufEnter,BufWinEnter,WinEnter term://* startinsert
 " au BufWinEnter,WinEnter term://* startinsert
 
 "NerdTree
