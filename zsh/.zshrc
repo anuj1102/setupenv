@@ -112,10 +112,7 @@ alias vi="$VISUAL"
 
 # Create new editing sessions easily
 function nmux() {
-  if ! abduco -a $1; then
-    echo "Session $1 not found, starting new session..."
-    abduco -c $1 nvim -c :terminal
-  fi
+    abduco -A $1 nvim -c :terminal
 }
 
 # https://superuser.com/questions/458906/zsh-tab-completion-of-git-commands-is-very-slow-how-can-i-turn-it-off
