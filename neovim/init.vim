@@ -42,6 +42,7 @@ set softtabstop=0 noexpandtab
 set shiftwidth=2
 set autoindent
 set smartindent
+set splitright
 
 " Copy paste
 set clipboard+=unnamed

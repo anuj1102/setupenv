@@ -12,7 +12,7 @@ check_dep pip3
 
 # Run ./packages/install_packages.rb to install these binaries locally
 check_dep ctags #--version should say universal
-check_dep abduco
+# check_dep abduco
 check_dep nvr
 
 # Update dotfiles and neovim plugins
