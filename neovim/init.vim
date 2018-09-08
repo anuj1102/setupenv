@@ -3,14 +3,13 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'tpope/vim-sensible'
 Plug 'mhartington/oceanic-next'
 Plug 'terryma/vim-multiple-cursors'
-" Plug 'vim-syntastic/syntastic'
+Plug 'vim-syntastic/syntastic'
 Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'bling/vim-airline'
 Plug 'Raimondi/delimitMate'
 Plug 'mklabs/split-term.vim'
 Plug 'rust-lang/rust.vim'
-Plug 'Shougo/deoplete.nvim'
 Plug 'fishbullet/deoplete-ruby'
 Plug 'easymotion/vim-easymotion'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -23,6 +22,15 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
+Plug 'ntpeters/vim-better-whitespace'
+
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/neosnippet-snippets'
+Plug 'Shougo/neosnippet.vim'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
 
 call plug#end()
 
@@ -63,10 +71,10 @@ noremap <Down> <nop>
 noremap <Left> <nop>
 noremap <Right> <nop>
 
-inoremap <Up> <nop>
-inoremap <Down> <nop>
-inoremap <Left> <nop>
-inoremap <Right> <nop>
+" inoremap <Up> <nop>
+" inoremap <Down> <nop>
+" inoremap <Left> <nop>
+" inoremap <Right> <nop>
 
 " Write the default yank register to a file so we can pull it locally
 " To do make this use $HOME
@@ -144,7 +152,6 @@ colorscheme OceanicNext
 " Autocomplete
 " let g:python3_host_prog = '/Users/anuj/.pyenv/versions/neovim3/bin/python'
 " let g:python_host_prog = '/Users/anuj/.pyenv/versions/neovim2/bin/python'
-" let g:deoplete#enable_at_startup = 1
 
 " Function to source only if file exists {
 function! SourceIfExists(file)
@@ -257,15 +264,19 @@ nnoremap <Leader>b :ls<CR>:b<Space>
 " http://www.blog.bdauria.com/?p=609
 let g:airline#extensions#tabline#enabled = 1
 " let g:airline#extensions#tabline#buffer_idx_mode = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
+" let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#show_splits = 1 "enable/disable displaying open splits per tab (only when tabs are opened). >
 let g:airline#extensions#tabline#show_buffers = 1 " enable/disable displaying buffers with a single tab
 let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
 
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline#extensions#tabline#formatter = 'unique_tail'
 " let g:airline#extensions#syntastic#enabled = 1
+
+"Ale
 let g:airline#extensions#ale#enabled = 1
+"Necessary to parse compile commands
+let g:ale_c_parse_compile_commands = 1
 
 " let g:airline_powerline_fonts = 1
 " let g:airline_theme='powerlineish'
@@ -274,3 +285,45 @@ let g:airline#extensions#ale#enabled = 1
 nnoremap <leader>' <c-]>
 nnoremap <leader>; <c-t>
 
+"deoplete
+let g:deoplete#enable_at_startup = 1
+
+
+"Neosnippet
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" https://github.com/Shougo/neosnippet.vim
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
+
+"LanguageClient
+" c++ cquery language client
+ let g:LanguageClient_serverCommands = {
+ \ 'cpp': ['~/.local/bin/cquery', '--log-file=~/.log/cquery/cq.log'],
+ \ 'c': ['~/.local/bin/cquery', '--log-file=~/.log/cquery/cq.log'],
+ \ }
+
+let g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
+let g:LanguageClient_settingsPath = '~/.config/nvim/settings.json'
+set completefunc=LanguageClient#complete
+set formatexpr=LanguageClient_textDocument_rangeFormatting()
+
+nnoremap <silent> gh :call LanguageClient#textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
+nnoremap <silent> gs :call LanguageClient#textDocument_documentSymbol()<CR>
+nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
