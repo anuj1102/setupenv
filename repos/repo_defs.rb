@@ -10,6 +10,7 @@ ZSH_SYNTAX_HIGHLIGHTING = Repo.new("#{zsh_custom}/zsh-syntax-highlighting", "htt
 ABDUCO = Repo.new("abduco", "https://github.com/martanne/abduco.git", ["session-manageer", "abduco"])
 CTAGS = Repo.new("ctags", "https://github.com/universal-ctags/ctags.git", ["ctags"])
 NVR = Repo.new("neovim-remote", "https://github.com/mhinz/neovim-remote.git", ["nvr"])
+CQUERY = Repo.new("cquery", "https://github.com/mhinz/neovim-remote.git", ["cquery"])
 
 
 ZSH_REPOS = [OH_MY_ZSH, COMMAND_TIME, ZSH_AUTOSUGGESTIONS, ZSH_SYNTAX_HIGHLIGHTING]
