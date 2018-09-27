@@ -23,6 +23,8 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'ntpeters/vim-better-whitespace'
+Plug 'vim-scripts/bufkill.vim'
+Plug 'mtahmed/click.vim'
 
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neosnippet-snippets'
@@ -107,11 +109,9 @@ vnoremap <Leader>k <c-w>k
 " nnoremap <Leader>[ gT
 
 nnoremap <Leader>d :vsplit<CR>
-nnoremap <Leader>D :split<CR>
-nnoremap <Leader>t :tabnew<CR>
+nnoremap <Leader>D :VTerm<CR>
+nnoremap <Leader>T :terminal<CR>
 nnoremap <Leader>w :close<CR>
-let g:terminus_use_xterm_title = 1
-nnoremap <Leader>T :TerminusOpen<CR>
 
 nnoremap <Leader>= :VTerm<cr>
 nnoremap <Leader>- :Term<cr>
@@ -229,7 +229,7 @@ au BufEnter,BufWinEnter,WinEnter term://* startinsert
 " au BufWinEnter,WinEnter term://* startinsert
 
 "NerdTree
-nnoremap <leader>D :NERDTreeToggle<CR>
+nnoremap <leader>N :NERDTreeToggle<CR>
 call SourceIfExists("~/.config/nvim/local.vim")
 
 "Buffers
@@ -253,9 +253,9 @@ nnoremap <leader>[ :bprevious<CR>
 " This replicates the idea of closing a tab
 function! QuitBuffer()
 	if &buftype == 'terminal'
-		:bd!
+		:BD!
 	else
-		:bd
+		:BD
 	endif
 endfunction
 "adfix"
