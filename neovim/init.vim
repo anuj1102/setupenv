@@ -61,14 +61,6 @@ set smartindent     " does the right thing (mostly) in programs
 
 " Copy paste
 set clipboard+=unnamed
-
-" function! g:ToggleNuMode()
-" 	if &nu == 1
-" 		set nornu nonumber
-" 	else
-" 		set number relativenumber
-" 	endif
-" endfunction
 set number
 set relativenumber
 
@@ -77,11 +69,6 @@ noremap <Up> <nop>
 noremap <Down> <nop>
 noremap <Left> <nop>
 noremap <Right> <nop>
-
-" inoremap <Up> <nop>
-" inoremap <Down> <nop>
-" inoremap <Left> <nop>
-" inoremap <Right> <nop>
 
 " Write the default yank register to a file so we can pull it locally
 " To do make this use $HOME
@@ -210,15 +197,6 @@ function! s:my_fzf_handler(lines) abort
 	endfor
 endfunction
 
-"nnoremap <silent> <leader>f :call fzf#run({
-"  \ 'options': '--expect=ctrl-t,ctrl-x,ctrl-v',
-"  \ 'up':      '40%',
-"'sink*':   function('<sid>my_fzf_handler')})<cr>
-
-
-" Terminal mode
-" Create new side terminal with T
-
 " http://vimcasts.org/episodes/neovim-terminal-mappings/
 tnoremap <Esc> <C-\><C-n>
 tnoremap <A-[> <Esc>
@@ -226,10 +204,11 @@ tnoremap <A-[> <Esc>
 au TermOpen * setlocal listchars= nonumber norelativenumber
 au TermOpen * startinsert
 au BufEnter,BufWinEnter,WinEnter term://* startinsert
-" au BufWinEnter,WinEnter term://* startinsert
 
 "NerdTree
-nnoremap <leader>N :NERDTreeToggle<CR>
+nnoremap <Leader>N :NERDTreeToggle<CR>
+
+" Local neovim configs
 call SourceIfExists("~/.config/nvim/local.vim")
 
 "Buffers
@@ -237,17 +216,10 @@ call SourceIfExists("~/.config/nvim/local.vim")
 " This is almost a must if you wish to use buffers in this way.
 set hidden
 
-" To open a new empty buffer
-" This replaces :tabnew which I used to bind to this mapping
-" nmap <leader>t :enew<cr>
 
 " Move to the next buffer
-" nmap <leader>n :bnext<CR>
-nnoremap <leader>] :bnext<CR>
-nnoremap <leader>[ :bprevious<CR>
-
-" Move to the previous buffer
-" nmap <leader>p :bprevious<CR>
+nnoremap <Leader>] :bnext<CR>
+nnoremap <Leader>[ :bprevious<CR>
 
 " Close the current buffer and move to the previous one
 " This replicates the idea of closing a tab
@@ -259,36 +231,27 @@ function! QuitBuffer()
 	endif
 endfunction
 "adfix"
-nnoremap <leader>q :call QuitBuffer()<CR>
+nnoremap <Leader>q :call QuitBuffer()<CR>
 
 " Show all open buffers and their status
-nmap <leader>p :Buffers<CR>
-
-nnoremap <Leader>b :ls<CR>:b<Space>
+nmap <Leader>p :Buffers<CR>
 
 " http://www.blog.bdauria.com/?p=609
 let g:airline#extensions#tabline#enabled = 1
-" let g:airline#extensions#tabline#buffer_idx_mode = 1
-" let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#show_splits = 1 "enable/disable displaying open splits per tab (only when tabs are opened). >
 let g:airline#extensions#tabline#show_buffers = 1 " enable/disable displaying buffers with a single tab
 let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
-
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
-" let g:airline#extensions#syntastic#enabled = 1
 
 "Ale
 let g:airline#extensions#ale#enabled = 1
 "Necessary to parse compile commands
 let g:ale_c_parse_compile_commands = 1
 
-" let g:airline_powerline_fonts = 1
-" let g:airline_theme='powerlineish'
-" set laststatus=2
 "Tags
-nnoremap <leader>' <c-]>
-nnoremap <leader>; <c-t>
+nnoremap <Leader>' <c-]>
+nnoremap <Leader>; <c-t>
 
 "deoplete
 let g:deoplete#enable_at_startup = 1
