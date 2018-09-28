@@ -9,6 +9,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'bling/vim-airline'
 Plug 'Raimondi/delimitMate'
 Plug 'mklabs/split-term.vim'
+Plug 'kassio/neoterm'
 Plug 'rust-lang/rust.vim'
 Plug 'fishbullet/deoplete-ruby'
 Plug 'easymotion/vim-easymotion'
@@ -25,6 +26,7 @@ Plug 'tpope/vim-surround'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'vim-scripts/bufkill.vim'
 Plug 'mtahmed/click.vim'
+Plug 'janko-m/vim-test'
 
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neosnippet-snippets'
@@ -155,8 +157,8 @@ endfunction
 "Syntastic cpp
 " let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
-"Auto chdir
-autocmd BufEnter * silent! lcd %:p:h
+"Auto chdir, NOT sure why I needed this
+" autocmd BufEnter * silent! lcd %:p:h
 
 "Fzf
 let g:fzf_layout = { 'up': '~40%' }
@@ -258,34 +260,7 @@ let g:deoplete#enable_at_startup = 1
 
 
 "Neosnippet
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-
-" https://github.com/Shougo/neosnippet.vim
-" SuperTab like snippets behavior.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-"imap <expr><TAB>
-" \ pumvisible() ? "\<C-n>" :
-" \ neosnippet#expandable_or_jumpable() ?
-" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-" For conceal markers.
-if has('conceal')
-  set conceallevel=2 concealcursor=niv
-endif
-
-
-"LanguageClient
-" c++ cquery language client
- let g:LanguageClient_serverCommands = {
- \ 'cpp': ['~/.local/bin/cquery', '--log-file=~/.log/cquery/cq.log'],
- \ 'c': ['~/.local/bin/cquery', '--log-file=~/.log/cquery/cq.log'],
- \ }
-
-let g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
+imap <C-k>     <Plug>(neosnippet_expand_or_jumpt g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
 let g:LanguageClient_settingsPath = '~/.config/nvim/settings.json'
 set completefunc=LanguageClient#complete
 set formatexpr=LanguageClient_textDocument_rangeFormatting()
@@ -295,3 +270,11 @@ nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
 nnoremap <silent> gs :call LanguageClient#textDocument_documentSymbol()<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+
+
+" Rspec
+let test#strategy = "neoterm"
+let test#ruby#rspec#options = "-fd"
+let test#ruby#rspec#executable = 'bundle exec script/zeus test'
+nnoremap <Leader>r :TestNearest<CR>
+
