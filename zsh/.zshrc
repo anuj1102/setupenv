@@ -128,6 +128,13 @@ fi
 if [ -f ~/.aliases ]; then
     . ~/.aliases
 fi
+
+# Reconnect ssh-agent
+if [[ -S "$SSH_AUTH_SOCK" && ! -h "$SSH_AUTH_SOCK" ]]; then
+    ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock;
+fi
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock;
+
 # eval "$(pyenv init -)"
 # eval "$(pyenv virtualenv-init -)"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=5'
@@ -143,5 +150,4 @@ export FZF_DEFAULT_OPTS="--history=$HOME/.fzf_history"
 
 # Enable vim in shell
 # bindkey -v
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

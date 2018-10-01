@@ -280,5 +280,4 @@ nnoremap <Leader>r :TestNearest<CR>
 
 " Neoterm run last command, https://github.com/kassio/neoterm/issues/210
 nnoremap <silent> <leader>c :<c-u>exec printf("%sTexec !! \<lt>cr>", v:count)<cr>
-tnoremap <silent> <leader>c :<c-u>exec printf("%sTexec !! \<lt>cr>", v:count)<cr>
 
