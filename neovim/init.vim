@@ -66,6 +66,9 @@ set clipboard+=unnamed
 set number
 set relativenumber
 
+" Highlight 80
+set cc=80
+
 "Learn VIM correctly
 noremap <Up> <nop>
 noremap <Down> <nop>
@@ -259,8 +262,14 @@ nnoremap <Leader>; <c-t>
 let g:deoplete#enable_at_startup = 1
 
 
-"Neosnippet
-imap <C-k>     <Plug>(neosnippet_expand_or_jumpt g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
+" https://github.com/cquery-project/cquery/wiki/Neovim
+" c++ language server
+let g:LanguageClient_serverCommands = {
+    \ 'cpp': ['cquery', '~/.log/cquery/cq.log'],
+    \ 'c': ['cquery', '~/.log/cquery/cq.log'],
+    \ }
+
+let g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
 let g:LanguageClient_settingsPath = '~/.config/nvim/settings.json'
 set completefunc=LanguageClient#complete
 set formatexpr=LanguageClient_textDocument_rangeFormatting()
@@ -272,6 +281,7 @@ nnoremap <silent> gs :call LanguageClient#textDocument_documentSymbol()<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 
+
 " Rspec
 let test#strategy = "neoterm"
 let test#ruby#rspec#options = "-fd"
@@ -280,4 +290,5 @@ nnoremap <Leader>r :TestNearest<CR>
 
 " Neoterm run last command, https://github.com/kassio/neoterm/issues/210
 nnoremap <silent> <leader>c :<c-u>exec printf("%sTexec !! \<lt>cr>", v:count)<cr>
+
 
