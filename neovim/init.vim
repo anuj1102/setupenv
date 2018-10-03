@@ -27,6 +27,7 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'vim-scripts/bufkill.vim'
 Plug 'mtahmed/click.vim'
 Plug 'janko-m/vim-test'
+Plug 'ervandew/supertab'
 
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neosnippet-snippets'
@@ -291,4 +292,23 @@ nnoremap <Leader>r :TestNearest<CR>
 " Neoterm run last command, https://github.com/kassio/neoterm/issues/210
 nnoremap <silent> <leader>c :<c-u>exec printf("%sTexec !! \<lt>cr>", v:count)<cr>
 
+"Neosnippet
+" Plugin key-mappings.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <S-Tab>  <Plug>(neosnippet_expand_or_jump)
+smap <S-Tab>  <Plug>(neosnippet_expand_or_jump)
+xmap <S-Tab>  <Plug>(neosnippet_expand_target)
 
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <expr><TAB>
+ \ pumvisible() ? "\<C-n>" :
+ \ neosnippet#expandable_or_jumpable() ?
+ \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
