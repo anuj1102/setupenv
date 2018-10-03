@@ -27,7 +27,6 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'vim-scripts/bufkill.vim'
 Plug 'mtahmed/click.vim'
 Plug 'janko-m/vim-test'
-Plug 'ervandew/supertab'
 
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neosnippet-snippets'
