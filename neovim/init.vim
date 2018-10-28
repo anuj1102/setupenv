@@ -9,6 +9,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'bling/vim-airline'
 Plug 'Raimondi/delimitMate'
 Plug 'mklabs/split-term.vim'
+Plug 'kassio/neoterm'
 Plug 'rust-lang/rust.vim'
 Plug 'fishbullet/deoplete-ruby'
 Plug 'easymotion/vim-easymotion'
@@ -23,6 +24,9 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'ntpeters/vim-better-whitespace'
+Plug 'vim-scripts/bufkill.vim'
+Plug 'mtahmed/click.vim'
+Plug 'janko-m/vim-test'
 
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neosnippet-snippets'
@@ -54,27 +58,17 @@ set splitright
 
 " Copy paste
 set clipboard+=unnamed
-
-" function! g:ToggleNuMode()
-" 	if &nu == 1
-" 		set nornu nonumber
-" 	else
-" 		set number relativenumber
-" 	endif
-" endfunction
 set number
 set relativenumber
+
+" Highlight 80
+set cc=80
 
 "Learn VIM correctly
 noremap <Up> <nop>
 noremap <Down> <nop>
 noremap <Left> <nop>
 noremap <Right> <nop>
-
-" inoremap <Up> <nop>
-" inoremap <Down> <nop>
-" inoremap <Left> <nop>
-" inoremap <Right> <nop>
 
 " Write the default yank register to a file so we can pull it locally
 " To do make this use $HOME
@@ -102,11 +96,9 @@ vnoremap <Leader>k <c-w>k
 " nnoremap <Leader>[ gT
 
 nnoremap <Leader>d :vsplit<CR>
-nnoremap <Leader>D :split<CR>
-nnoremap <Leader>t :tabnew<CR>
+nnoremap <Leader>D :VTerm<CR>
+nnoremap <Leader>T :terminal<CR>
 nnoremap <Leader>w :close<CR>
-let g:terminus_use_xterm_title = 1
-nnoremap <Leader>T :TerminusOpen<CR>
 
 nnoremap <Leader>= :VTerm<cr>
 nnoremap <Leader>- :Term<cr>
@@ -163,8 +155,8 @@ endfunction
 "Syntastic cpp
 " let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
-"Auto chdir
-autocmd BufEnter * silent! lcd %:p:h
+"Auto chdir, NOT sure why I needed this
+" autocmd BufEnter * silent! lcd %:p:h
 
 "Fzf
 let g:fzf_layout = { 'up': '~40%' }
@@ -205,15 +197,6 @@ function! s:my_fzf_handler(lines) abort
 	endfor
 endfunction
 
-"nnoremap <silent> <leader>f :call fzf#run({
-"  \ 'options': '--expect=ctrl-t,ctrl-x,ctrl-v',
-"  \ 'up':      '40%',
-"'sink*':   function('<sid>my_fzf_handler')})<cr>
-
-
-" Terminal mode
-" Create new side terminal with T
-
 " http://vimcasts.org/episodes/neovim-terminal-mappings/
 tnoremap <Esc> <C-\><C-n>
 tnoremap <A-[> <Esc>
@@ -221,10 +204,11 @@ tnoremap <A-[> <Esc>
 au TermOpen * setlocal listchars= nonumber norelativenumber
 au TermOpen * startinsert
 au BufEnter,BufWinEnter,WinEnter term://* startinsert
-" au BufWinEnter,WinEnter term://* startinsert
 
 "NerdTree
-nnoremap <leader>D :NERDTreeToggle<CR>
+nnoremap <Leader>N :NERDTreeToggle<CR>
+
+" Local neovim configs
 call SourceIfExists("~/.config/nvim/local.vim")
 
 "Buffers
@@ -232,90 +216,53 @@ call SourceIfExists("~/.config/nvim/local.vim")
 " This is almost a must if you wish to use buffers in this way.
 set hidden
 
-" To open a new empty buffer
-" This replaces :tabnew which I used to bind to this mapping
-" nmap <leader>t :enew<cr>
 
 " Move to the next buffer
-" nmap <leader>n :bnext<CR>
-nnoremap <leader>] :bnext<CR>
-nnoremap <leader>[ :bprevious<CR>
-
-" Move to the previous buffer
-" nmap <leader>p :bprevious<CR>
+nnoremap <Leader>] :bnext<CR>
+nnoremap <Leader>[ :bprevious<CR>
 
 " Close the current buffer and move to the previous one
 " This replicates the idea of closing a tab
 function! QuitBuffer()
 	if &buftype == 'terminal'
-		:bd!
+		:BD!
 	else
-		:bd
+		:BD
 	endif
 endfunction
 "adfix"
-nnoremap <leader>q :call QuitBuffer()<CR>
+nnoremap <Leader>q :call QuitBuffer()<CR>
 
 " Show all open buffers and their status
-nmap <leader>p :Buffers<CR>
-
-nnoremap <Leader>b :ls<CR>:b<Space>
+nmap <Leader>p :Buffers<CR>
 
 " http://www.blog.bdauria.com/?p=609
 let g:airline#extensions#tabline#enabled = 1
-" let g:airline#extensions#tabline#buffer_idx_mode = 1
-" let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#show_splits = 1 "enable/disable displaying open splits per tab (only when tabs are opened). >
 let g:airline#extensions#tabline#show_buffers = 1 " enable/disable displaying buffers with a single tab
 let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
-
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
-" let g:airline#extensions#syntastic#enabled = 1
 
 "Ale
 let g:airline#extensions#ale#enabled = 1
 "Necessary to parse compile commands
 let g:ale_c_parse_compile_commands = 1
 
-" let g:airline_powerline_fonts = 1
-" let g:airline_theme='powerlineish'
-" set laststatus=2
 "Tags
-nnoremap <leader>' <c-]>
-nnoremap <leader>; <c-t>
+nnoremap <Leader>' <c-]>
+nnoremap <Leader>; <c-t>
 
 "deoplete
 let g:deoplete#enable_at_startup = 1
 
 
-"Neosnippet
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-
-" https://github.com/Shougo/neosnippet.vim
-" SuperTab like snippets behavior.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-"imap <expr><TAB>
-" \ pumvisible() ? "\<C-n>" :
-" \ neosnippet#expandable_or_jumpable() ?
-" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-" For conceal markers.
-if has('conceal')
-  set conceallevel=2 concealcursor=niv
-endif
-
-
-"LanguageClient
-" c++ cquery language client
- let g:LanguageClient_serverCommands = {
- \ 'cpp': ['~/.local/bin/cquery', '--log-file=~/.log/cquery/cq.log'],
- \ 'c': ['~/.local/bin/cquery', '--log-file=~/.log/cquery/cq.log'],
- \ }
+" https://github.com/cquery-project/cquery/wiki/Neovim
+" c++ language server
+let g:LanguageClient_serverCommands = {
+    \ 'cpp': ['cquery', '~/.log/cquery/cq.log'],
+    \ 'c': ['cquery', '~/.log/cquery/cq.log'],
+    \ }
 
 let g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
 let g:LanguageClient_settingsPath = '~/.config/nvim/settings.json'
@@ -327,3 +274,35 @@ nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
 nnoremap <silent> gs :call LanguageClient#textDocument_documentSymbol()<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+
+
+
+" Rspec
+let test#strategy = "neoterm"
+let test#ruby#rspec#options = "-fd"
+let test#ruby#rspec#executable = 'bundle exec script/zeus test'
+nnoremap <Leader>r :TestNearest<CR>
+
+" Neoterm run last command, https://github.com/kassio/neoterm/issues/210
+nnoremap <silent> <leader>c :<c-u>exec printf("%sTexec !! \<lt>cr>", v:count)<cr>
+
+"Neosnippet
+" Plugin key-mappings.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <S-Tab>  <Plug>(neosnippet_expand_or_jump)
+smap <S-Tab>  <Plug>(neosnippet_expand_or_jump)
+xmap <S-Tab>  <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <expr><TAB>
+ \ pumvisible() ? "\<C-n>" :
+ \ neosnippet#expandable_or_jumpable() ?
+ \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
