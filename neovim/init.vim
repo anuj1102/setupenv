@@ -262,6 +262,7 @@ let g:deoplete#enable_at_startup = 1
 let g:LanguageClient_serverCommands = {
     \ 'cpp': ['cquery', '~/.log/cquery/cq.log'],
     \ 'c': ['cquery', '~/.log/cquery/cq.log'],
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
     \ }
 
 let g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
@@ -306,3 +307,11 @@ smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 if has('conceal')
   set conceallevel=2 concealcursor=niv
 endif
+
+set mouse=a
+set tabstop=2
+" set softtabstop=0 noexpandtab
+" set shiftwidth=2
+set autoindent
+set smartindent
+set splitright
