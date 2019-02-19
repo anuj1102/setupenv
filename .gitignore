@@ -2,3 +2,4 @@ autogen*
 *.o
 tags
 *.mk
+neovim/squashfs-root/
