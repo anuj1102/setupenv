@@ -1,4 +1,5 @@
-wget https://github.com/neovim/neovim/releases/download/v0.3.1/nvim.appimage
+# Install neovim from https://github.com/neovim/neovim/releases
 
+wget https://github.com/neovim/neovim/releases/download/v0.3.4/nvim.appimage
 ./nvim.appimage --appimage-extract
 ln -s $HOME/.local/bin/nvim squash-fs/AppRun # in home dir
