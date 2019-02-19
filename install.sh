@@ -1,3 +1,4 @@
+#!/bin/bash
 
 function check_dep() {
 	command -v $1 >/dev/null 2>&1 || { echo >&2 "Dependency $1 not found. $2"; exit 1; }
@@ -20,5 +21,5 @@ check_dep curl
 #check_dep nvr
 
 # Update dotfiles and neovim plugins
-./zsh/setup_zsh.rb
-#./neovim/setup_neovim.rb
+#./zsh/setup_zsh.rb
+./neovim/setup_neovim.rb

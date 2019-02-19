@@ -36,6 +36,7 @@ def create_tmp_plugin_file(plugin_file)
 	end
 end
 
+stage("mkdir -p /home/anujp/.config/nvim").run
 stage("rm #{nvim_init_config}").run # make it idempotent
 create_tmp_plugin_file("#{NVIM_INIT}")
 stage("cp #{TMP_INIT} #{nvim_init_config}").run
