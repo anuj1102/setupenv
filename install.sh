@@ -15,8 +15,8 @@ check_dep curl
 # check_dep rg # ripgrep
 
 # Run ./packages/install_packages.rb to install these binaries locally
-check_dep nvim "Run neovim/install.sh to set this up"
-check_dep abduco
+#check_dep nvim "Run neovim/install.sh to set this up" #zshrc will export this so don't do anything else
+# check_dep abduco
 check_dep nvr
 
 # Update dotfiles and neovim plugins

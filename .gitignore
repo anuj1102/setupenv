@@ -3,3 +3,5 @@ autogen*
 tags
 *.mk
 neovim/squashfs-root/
+abduco/config.mk
+abduco/abduco
