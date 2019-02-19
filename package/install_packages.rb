@@ -7,7 +7,7 @@ require_relative "../src/package.rb"
 INSTALL_DIR = "#{ENV["HOME"]}/.local"
 puts "#{CTAGS}"
 stage("echo 'hi'", "Install packages to #{INSTALL_DIR}?")
-abduco_package = Package.new(ABDUCO, INSTALL_DIR) 
+abduco_package = Package.new(ABDUCO, INSTALL_DIR)
 abduco_package.compile("./configure --prefix=#{INSTALL_DIR} && make")
 abduco_package.install("make install")
 

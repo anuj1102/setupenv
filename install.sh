@@ -1,18 +1,17 @@
 
 function check_dep() {
-	command -v $1 >/dev/null 2>&1 || { echo >&2 "Dependency $1 not found"; exit 1; }
+	command -v $1 >/dev/null 2>&1 || { echo >&2 "Dependency $1 not found. $2"; exit 1; }
 }
 
 # OS must provide these through default packages
 check_dep ruby
-check_dep nvim # at least 0.3.0
 check_dep rg # ripgrep
 check_dep zsh
 check_dep pip3
 
 # Run ./packages/install_packages.rb to install these binaries locally
-check_dep ctags #--version should say universal
-# check_dep abduco
+check_dep nvim "Run neovim/install.sh to set this up"
+check_dep abduco
 check_dep nvr
 
 # Update dotfiles and neovim plugins
