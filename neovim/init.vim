@@ -19,7 +19,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'brettanomyces/nvim-terminus'
 Plug 'majutsushi/tagbar'
-Plug 'ludovicchabant/vim-gutentags'
+" Plug 'ludovicchabant/vim-gutentags'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
@@ -236,6 +236,9 @@ nnoremap <Leader>q :call QuitBuffer()<CR>
 " Show all open buffers and their status
 nmap <Leader>p :Buffers<CR>
 
+" Copy filename
+nnor yf :let @"=expand("%:p")<CR>    " Mnemonic: Yank File path
+
 " http://www.blog.bdauria.com/?p=609
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_splits = 1 "enable/disable displaying open splits per tab (only when tabs are opened). >
@@ -274,7 +277,18 @@ nnoremap <silent> gh :call LanguageClient#textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
 nnoremap <silent> gs :call LanguageClient#textDocument_documentSymbol()<CR>
-nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+nnoremap <silent> gS :call LanguageClient_workspace_symbol({'query':input('workspace/symbol ')})<cr>
+
+nnoremap <silent> gR :call LanguageClient#textDocument_rename()<CR>
+augroup LanguageClient_config
+  au!
+  au BufEnter * let b:Plugin_LanguageClient_started = 0
+  au User LanguageClientStarted setl signcolumn=yes
+  au User LanguageClientStarted let b:Plugin_LanguageClient_started = 1
+  au User LanguageClientStopped setl signcolumn=auto
+  au User LanguageClientStopped let b:Plugin_LanguageClient_stopped = 0
+  au CursorMoved * if b:Plugin_LanguageClient_started | call LanguageClient_textDocument_hover() | endif
+augroup END
 
 
 
@@ -308,10 +322,8 @@ if has('conceal')
   set conceallevel=2 concealcursor=niv
 endif
 
-set mouse=a
-set tabstop=2
-" set softtabstop=0 noexpandtab
-" set shiftwidth=2
-set autoindent
-set smartindent
-set splitright
+let g:deoplete#auto_complete_delay = 0
+let g:auto_refresh_delay = 0
+
+" Copy filename to clipboard
+nmap <Leader>P :let @" = expand("%:p")<CR>
