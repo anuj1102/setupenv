@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 # Downlaod neovim from https://github.com/neovim/neovim/releases
 
 LOCAL_PROG_PATH=$HOME/.local/bin
