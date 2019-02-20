@@ -5,7 +5,7 @@ function check_dep() {
 }
 
 function manual_install() {
-	echo "Run cd $1 && ./install.sh to setup $1"
+	echo "Run cd $1 && ./install.sh to setup $2"
 }
 
 # OS must provide these through default packages
@@ -18,7 +18,8 @@ check_dep curl
 
 
 # Run ./packages/install_packages.rb to install these binaries locally
-manual_install zsh
-manual_install nvim
-manual_install abduco
-manual_install nvr
+manual_install zsh zsh
+echo "Run chsh -s /bin/zsh to set default shell to zsh if you haven't already."
+manual_install nvim nvim
+manual_install abduco abduco
+manual_install neovim-remote nvr
