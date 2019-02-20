@@ -1,9 +1,11 @@
-#!/bin/sh
+#!/bin/bash
+
 # Downlaod neovim from https://github.com/neovim/neovim/releases
 
 LOCAL_PROG_PATH=$HOME/.local/bin
 LOCAL_NVIM_PATH=$HOME/.local/bin/nvim
 OSX_BINARY=neovim_binaries/nvim-osx64/bin/nvim
+LINUX_BINARY=neovim_binaries/squashfs-root/AppRun
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	BINARY=$LINUX_BINARY
