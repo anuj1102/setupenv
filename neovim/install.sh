@@ -8,3 +8,4 @@ chmod u+x nvim.appimage
 mkdir -p $LOCAL_PROG_PATH
 ln -sf $PWD/squashfs-root/AppRun $LOCAL_PROG_PATH/nvim
 rm nvim.appimage
+./setup_neovim.rb

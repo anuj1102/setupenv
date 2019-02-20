@@ -7,11 +7,7 @@ DIR=File.expand_path(File.dirname(__FILE__))
 NVIM_INIT="#{DIR}/init.vim"
 TMP_INIT= "tmp_init.vim"
 
-vim_plug = Repo.new("#{DIR}/vim-plug", 
-										 "https://github.com/junegunn/vim-plug",
-										 ["neovim"]
-										)
-
+vim_plug = Repo.new("#{DIR}/vim-plug","https://github.com/junegunn/vim-plug",["neovim"])
 stage("mkdir -p ~/.local/share/nvim/site/autoload && cp #{DIR}/vim-plug/plug.vim ~/.local/share/nvim/site/autoload/plug.vim").run
 
 # Install only plugins in config first so we can use vim-plug to install deps
