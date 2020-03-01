@@ -327,3 +327,6 @@ let g:auto_refresh_delay = 0
 
 " Copy filename to clipboard
 nmap <Leader>P :let @" = expand("%:p")<CR>
+
+" Set default shell
+set shell=/bin/zsh
