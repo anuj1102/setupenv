@@ -1,0 +1,5 @@
+- Reorganize ruby code
+- Add bash aliases
+- Refactor language specific vim stuff
+- Add upgrade script, and uninstall script
+- Consider adding linux specific package install?

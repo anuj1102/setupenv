@@ -156,3 +156,11 @@ export FZF_DEFAULT_OPTS="--history=$HOME/.fzf_history"
 # Aliases, TODO move to a different file
 # TODO: add ripgrep
 alias gg="git grep"
+
+function clear-ls() {
+  clear
+  ls
+  zle && zle .reset-prompt && zle -R
+}
+zle -N clear-ls
+bindkey '^k' clear-ls
