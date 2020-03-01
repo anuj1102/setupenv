@@ -1,6 +1,5 @@
 require_relative "stage.rb"
 
-
 module Installation
 	def compile(cmd)
 		puts "Compiling #{@repo}"

@@ -152,3 +152,7 @@ export FZF_DEFAULT_OPTS="--history=$HOME/.fzf_history"
 # Enable vim in shell
 # bindkey -v
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Aliases, TODO move to a different file
+# TODO: add ripgrep
+alias gg="git grep"
