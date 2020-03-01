@@ -23,19 +23,16 @@ THE SOFTWARE.
 """
 
 import argparse
-import neovim
+import multiprocessing
 import os
-import psutil
 import re
-import socket
-import stat
-import subprocess
 import sys
 import textwrap
 import time
 import traceback
-import uuid
 
+import psutil
+import pynvim
 
 class Nvr():
     def __init__(self, address, silent=False):
@@ -46,38 +43,48 @@ class Nvr():
         self.started_new_process = False
         self.handled_first_buffer = False
         self.diffmode = False
-        self._msg_shown = False
 
     def attach(self):
         try:
-            if get_address_type(self.address) == 'tcp':
-                ip, port = self.address.split(':', 1)
-                self.server = neovim.attach('tcp', address=ip, port=int(port))
+            socktype, address, port = parse_address(self.address)
+            if socktype == 'tcp':
+                self.server = pynvim.attach('tcp', address=address, port=int(port))
             else:
-                self.server = neovim.attach('socket', path=self.address)
+                self.server = pynvim.attach('socket', path=address)
         except OSError:
             # Ignore invalid addresses.
             pass
 
-    def start_new_process(self):
-        pid = os.fork()
-        if pid == 0:
+    def try_attach(self, args, nvr, options, arguments):
             for i in range(10):
                 self.attach()
                 if self.server:
                     self.started_new_process = True
-                    return True
+                    return main2(nvr, options, arguments)
                 time.sleep(0.2)
-        else:
-            os.environ['NVIM_LISTEN_ADDRESS'] = self.address
-            try:
-                args = os.environ.get('NVR_CMD')
-                args = args.split(' ') if args else ['nvim']
-                os.dup2(sys.stdout.fileno(), sys.stdin.fileno())
-                os.execvpe(args[0], args, os.environ)
-            except FileNotFoundError:
-                print("[!] Can't start new nvim process: '{}' is not in $PATH.".format(args[0]))
-                sys.exit(1)
+            print('[!] Unable to attach to the new nvim process. Is `{}` working?'
+                    .format(" ".join(args)))
+            sys.exit(1)
+
+    def execute_new_nvim_process(self, silent, nvr, options, arguments):
+        if not silent:
+            print(textwrap.dedent('''\
+                [*] Starting new nvim process using $NVR_CMD or 'nvim'.
+
+                    Use --nostart to avoid starting a new process.
+            '''))
+
+        args = os.environ.get('NVR_CMD')
+        args = args.split(' ') if args else ['nvim']
+
+        multiprocessing.Process(target=self.try_attach, args=(args, nvr, options, arguments)).start()
+
+        os.environ['NVIM_LISTEN_ADDRESS'] = self.address
+        try:
+            os.execvpe(args[0], args, os.environ)
+        except FileNotFoundError:
+            print("[!] Can't start new nvim process: '{}' is not in $PATH.".format(args[0]))
+            sys.exit(1)
 
     def read_stdin_into_buffer(self, cmd):
         self.server.command(cmd)
@@ -89,7 +96,10 @@ class Nvr():
         if not is_netrw_protocol(path):
             path = os.path.abspath(path)
         path = self.server.funcs.fnameescape(path)
+        shortmess = self.server.options['shortmess']
+        self.server.options['shortmess'] = shortmess.replace('F', '')
         self.server.command('{} {}'.format(cmd, path))
+        self.server.options['shortmess'] = shortmess
 
     def diffthis(self):
         if self.diffmode:
@@ -119,7 +129,7 @@ class Nvr():
 
         for fname in files:
             if fname == '-':
-                self.read_stdin_into_buffer('enew' if cmd == 'edit' else cmd)
+                self.read_stdin_into_buffer(stdin_cmd(cmd))
             else:
                 try:
                     if self.started_new_process and not self.handled_first_buffer:
@@ -127,10 +137,11 @@ class Nvr():
                         self.handled_first_buffer = True
                     else:
                         self.fnameescaped_command(cmd, fname)
-                except neovim.api.nvim.NvimError as e:
+                except pynvim.api.nvim.NvimError as e:
                     if not re.search('E37', e.args[0].decode()):
                         traceback.print_exc()
                         sys.exit(1)
+            self.diffthis()
 
             if wait:
                 self.wait_for_current_buffer()
@@ -139,6 +150,15 @@ class Nvr():
             self.server.command(cmd if cmd else '$')
 
         return len(files)
+
+
+def stdin_cmd(cmd):
+    return {
+            'edit': 'enew',
+            'split': 'new',
+            'vsplit': 'vnew',
+            'tabedit': 'tabnew',
+            }[cmd]
 
 
 def is_netrw_protocol(path):
@@ -154,17 +174,6 @@ def is_netrw_protocol(path):
             ]
 
     return True if any(prot.match(path) for prot in protocols) else False
-
-
-def sanitize_address(address):
-    if get_address_type(address) == 'socket' and os.path.exists(address):
-        try:
-            sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-            sock.connect(address)
-        except:
-            address = '/tmp/nvimsocket-{}'.format(uuid.uuid4())
-
-    return address
 
 
 def parse_args(argv):
@@ -299,8 +308,8 @@ def parse_args(argv):
     return parser.parse_known_args(argv[1:])
 
 
-def show_message(old_address, new_address):
-    print(textwrap.dedent("""
+def show_message(address):
+    print(textwrap.dedent('''
         [!] Can't connect to: {}
 
             The server (nvim) and client (nvr) have to use the same address.
@@ -314,6 +323,10 @@ def show_message(old_address, new_address):
 
                 Use `:echo v:servername` to verify the address.
 
+                Security: When using Unix domain sockets on a multi-user system,
+                the socket should have proper permissions so that it is only
+                accessible by your user.
+
             Client:
 
                 Expose $NVIM_LISTEN_ADDRESS to the environment before
@@ -324,57 +337,75 @@ def show_message(old_address, new_address):
                 $ nvr --servername {} file1 file2
                 $ nvr --servername 127.0.0.1:6789 file1 file2
 
-            nvr is now starting a server on its own by running $NVR_CMD or 'nvim'.
-
             Use -s to suppress this message.
-
-        [*] Starting new nvim process with address {}
-        """.format(old_address, old_address, old_address, old_address, new_address)))
+        '''.format(address, address, address, address)))
 
 
 def split_cmds_from_files(args):
-    for i, arg in enumerate(args):
-        if arg[0] != '+':
-            return [x[1:] for x in reversed(args[:i])], list(reversed(args[i:]))
-    return [], []
+    cmds = []
+    files = []
+    for _ in range(len(args)):
+        if args[0][0] == '+':
+            cmds.append(args.pop(0)[1:])
+        elif args[0] == '--':
+            args.pop(0)
+            files += args
+            break
+        else:
+            files.append(args.pop(0))
+    return cmds, files
 
 
-def print_sockaddrs():
-    sockaddrs = []
+def print_versions():
+    import pkg_resources
+    print('nvr {}'.format(pkg_resources.require('neovim-remote')[0].version))
+    print('pynvim {}'.format(pkg_resources.require('pynvim')[0].version))
+    print('psutil {}'.format(pkg_resources.require('psutil')[0].version))
+    print('Python {}'.format(sys.version.split('\n')[0]))
 
-    for proc in psutil.process_iter():
-        if proc.name() == 'nvim':
-            for conn in proc.connections('inet4'):
-                sockaddrs.insert(0, ':'.join(map(str, conn.laddr)))
-            for conn in proc.connections('unix'):
-                if conn.laddr:
-                    sockaddrs.insert(0, conn.laddr)
 
-    for addr in sorted(sockaddrs):
+def print_addresses():
+    addresses = []
+    errors = []
+
+    for proc in psutil.process_iter(attrs=['name']):
+        if proc.info['name'] == 'nvim':
+            try:
+                for conn in proc.connections('inet4'):
+                    addresses.insert(0, ':'.join(map(str, conn.laddr)))
+                for conn in proc.connections('inet6'):
+                    addresses.insert(0, ':'.join(map(str, conn.laddr)))
+                for conn in proc.connections('unix'):
+                    if conn.laddr:
+                        addresses.insert(0, conn.laddr)
+            except psutil.AccessDenied:
+                errors.insert(0, 'Access denied for nvim ({})'.format(proc.pid))
+
+    for addr in sorted(addresses):
         print(addr)
+    for error in sorted(errors):
+        print(error, file=sys.stderr)
 
 
-def get_address_type(address):
+def parse_address(address):
     try:
-        ip, port = address.split(':', 1)
+        host, port = address.rsplit(':', 1)
         if port.isdigit():
-            return 'tcp'
+            return 'tcp', host, port
         raise ValueError
     except ValueError:
-        return 'socket'
+        return 'socket', address, None
 
 
 def main(argv=sys.argv, env=os.environ):
     options, arguments = parse_args(argv)
 
     if options.version:
-        import pkg_resources
-        version = pkg_resources.require('neovim-remote')[0].version
-        print('nvr {}'.format(version))
+        print_versions()
         return
 
     if options.serverlist:
-        print_sockaddrs()
+        print_addresses()
         return
 
     address = options.servername or env.get('NVIM_LISTEN_ADDRESS') or '/tmp/nvimsocket'
@@ -383,15 +414,17 @@ def main(argv=sys.argv, env=os.environ):
     nvr.attach()
 
     if not nvr.server:
-        nvr.address = sanitize_address(address)
         silent = options.remote_silent or options.remote_wait_silent or options.remote_tab_silent or options.remote_tab_wait_silent or options.s
         if not silent:
-            show_message(address, nvr.address)
+            show_message(address)
         if options.nostart:
             sys.exit(1)
-        else:
-            nvr.start_new_process()
+        nvr.execute_new_nvim_process(silent, nvr, options, arguments)
 
+    main2(nvr, options, arguments)
+
+
+def main2(nvr, options, arguments):
     if options.d:
         nvr.diffmode = True
 
@@ -403,11 +436,6 @@ def main(argv=sys.argv, env=os.environ):
 
     if options.l:
         nvr.server.command('wincmd p')
-
-    try:
-        arguments.remove('--')
-    except ValueError:
-        pass
 
     if options.remote is not None:
         nvr.execute(options.remote + arguments, 'edit')
@@ -425,13 +453,10 @@ def main(argv=sys.argv, env=os.environ):
         nvr.execute(options.remote_tab_silent + arguments, 'tabedit', silent=True)
     elif options.remote_tab_wait_silent is not None:
         nvr.execute(options.remote_tab_wait_silent + arguments, 'tabedit', silent=True, wait=True)
-    elif arguments:
-        if options.d:
-            # Emulate `vim -d`.
-            options.O = arguments
-        else:
-            # Act like --remote-silent by default.
-            nvr.execute(arguments, 'edit', silent=True)
+    elif arguments and options.d:
+        # Emulate `vim -d`.
+        options.O = arguments
+        arguments = []
 
     if options.remote_send:
         nvr.server.input(options.remote_send)
@@ -455,50 +480,32 @@ def main(argv=sys.argv, env=os.environ):
         elif type(result) is dict:
             print({ (k.decode() if type(k) is bytes else k): v for (k,v) in result.items() })
         else:
-            print(result)
+            result = str(result)
+            if not result.endswith(os.linesep):
+                result += os.linesep
+            print(result, end='', flush=True)
 
     if options.o:
-        if nvr.started_new_process:
-            cmd = 'edit'
-        elif options.d:
-            cmd = 'tabedit'
+        args = options.o + arguments
+        if nvr.diffmode and not nvr.started_new_process:
+            nvr.fnameescaped_command('tabedit', args[0])
+            nvr.execute(args[1:], 'split', silent=True, wait=False)
         else:
-            cmd = 'split'
-        nvr.fnameescaped_command(cmd, options.o.pop(0))
-        nvr.diffthis()
-        for fname in options.o:
-            if fname == '-':
-                nvr.read_stdin_into_buffer('new')
-            else:
-                nvr.fnameescaped_command('split', fname)
-            nvr.diffthis()
+            nvr.execute(args, 'split', silent=True, wait=False)
         nvr.server.command('wincmd =')
-
-    if options.O:
-        if nvr.started_new_process:
-            cmd = 'edit'
-        elif options.d:
-            cmd = 'tabedit'
+    elif options.O:
+        args = options.O + arguments
+        if nvr.diffmode and not nvr.started_new_process:
+            nvr.fnameescaped_command('tabedit', args[0])
+            nvr.execute(args[1:], 'vsplit', silent=True, wait=False)
         else:
-            cmd = 'vsplit'
-        nvr.fnameescaped_command(cmd, options.O.pop(0))
-        nvr.diffthis()
-        for fname in options.O:
-            if fname == '-':
-                nvr.read_stdin_into_buffer('vnew')
-            else:
-                nvr.fnameescaped_command('vsplit', fname)
-            nvr.diffthis()
+            nvr.execute(args, 'vsplit', silent=True, wait=False)
         nvr.server.command('wincmd =')
-
-    if options.p:
-        cmd = 'edit' if nvr.started_new_process else 'tabedit'
-        nvr.fnameescaped_command(cmd, options.p.pop(0))
-        for fname in options.p:
-            if fname == '-':
-                nvr.read_stdin_into_buffer('tabnew')
-            else:
-                nvr.fnameescaped_command('tabedit', fname)
+    elif options.p:
+        nvr.execute(options.p + arguments, 'tabedit', silent=True, wait=False)
+    else:
+        # Act like --remote-silent by default.
+        nvr.execute(arguments, 'edit', silent=True)
 
     if options.t:
         try:
@@ -510,16 +517,16 @@ def main(argv=sys.argv, env=os.environ):
     if options.q:
         path = nvr.server.funcs.fnameescape(os.environ['PWD'])
         nvr.server.command('lcd {}'.format(path))
-        nvr.server.funcs.setqflist('[]')
+        nvr.server.funcs.setqflist([])
         if options.q == '-':
             for line in sys.stdin:
                 nvr.server.command("caddexpr '{}'".
-                        format(line.rstrip().replace("'", "''").replace('|', '\|')))
+                        format(line.rstrip().replace("'", "''").replace('|', r'\|')))
         else:
             with open(options.q, 'r') as f:
                 for line in f.readlines():
                     nvr.server.command("caddexpr '{}'".
-                            format(line.rstrip().replace("'", "''").replace('|', '\|')))
+                            format(line.rstrip().replace("'", "''").replace('|', r'\|')))
         nvr.server.command('silent lcd -')
         nvr.server.command('cfirst')
 
@@ -541,11 +548,13 @@ def main(argv=sys.argv, env=os.environ):
                 wait_for_n_buffers -= 1
                 if wait_for_n_buffers == 0:
                     nvr.server.stop_loop()
+                    exitcode = 0 if len(args) == 0 else args[0]
             elif msg == 'Exit':
                 nvr.server.stop_loop()
                 exitcode = args[0]
 
         def err_cb(error):
+            nonlocal exitcode
             print(error, file=sys.stderr)
             nvr.server.stop_loop()
             exitcode = 1
@@ -553,6 +562,8 @@ def main(argv=sys.argv, env=os.environ):
         nvr.server.run_loop(None, notification_cb, None, err_cb)
         nvr.server.close()
         sys.exit(exitcode)
+
+    nvr.server.close()
 
 
 if __name__ == '__main__':
